@@ -1,0 +1,11 @@
+{
+  "name": "dumb-ecs",
+  "version": "0.0.1",
+  "description": "A super simple ECS framework built as a learning experience.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "William Gardner",
+  "license": "MIT"
+}
