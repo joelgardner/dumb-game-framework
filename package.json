@@ -1,8 +1,8 @@
 {
-  "name": "dumb-ecs",
+  "name": "dumb-game-framework",
   "version": "0.0.1",
   "description": "A super simple ECS framework built as a learning experience.",
-  "main": "index.js",
+  "main": "dist/index.esm.js",
   "type": "module",
   "scripts": {
     "build": "node build.js",

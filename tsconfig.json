@@ -2,9 +2,10 @@
   "compilerOptions": {
     "allowJs": true,
     "skipLibCheck": true,
+    "moduleResolution": "node",
     "target": "es6",
-    "moduleResolution": "node"
+    "isolatedModules": true,
+    "esModuleInterop": true
   },
   "include": ["./src/**/*", "./test/**/*"]
 }
-
