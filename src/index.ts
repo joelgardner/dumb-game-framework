@@ -1,2 +1,3 @@
-export * as ECS from "./ecs";
-export * as Engine from "./engine";
+export * from "./ecs";
+export * from "./engine";
+export type { Entity } from "./ecs/entity";
