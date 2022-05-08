@@ -1,5 +1,5 @@
 import type { Entity } from "./entity";
-import { ComponentContainer, Component } from "./component";
+import Component, { ComponentContainer } from "./component";
 import System from "./system";
 
 export default class ECS {

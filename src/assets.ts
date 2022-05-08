@@ -1,3 +1,9 @@
+export type AssetId = number;
+export type AssetOptions = { tags: string[] };
+export type Asset =
+  | { type: "IMAGE"; resource: HTMLImageElement; tags?: string[] }
+  | { type: "AUDIO"; resource: HTMLAudioElement; tags?: string[] };
+
 export interface IAssetLoader {
   load(): Promise<Asset>;
 }

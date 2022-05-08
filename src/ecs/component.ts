@@ -1,4 +1,4 @@
-export abstract class Component {}
+export default abstract class Component {}
 
 type ComponentClass<T extends Component> = new (...args: any[]) => T;
 

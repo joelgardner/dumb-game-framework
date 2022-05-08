@@ -1,7 +1,8 @@
+import type { AssetOptions, Asset, AssetId } from "./assets";
 import { IAssetLoader, ImageAssetLoader } from "./assets";
-import { Engine } from "./engine";
+import Engine from "./engine";
 
-export class Game {
+export default class Game {
   private assets = new Map<AssetId, Asset>();
   private engine = new Engine();
   private assetIdCounter: AssetId = 1;

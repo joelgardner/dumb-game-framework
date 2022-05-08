@@ -1,5 +1,5 @@
-import RequestAnimationFrameLoop, { IGameLoop } from "./gameLoop";
-import { ECS } from "../ecs";
+import RequestAnimationFrameLoop, { IGameLoop } from "./loop";
+import ECS from "./ecs/ecs";
 
 export default class Engine {
   public ecs = new ECS();
