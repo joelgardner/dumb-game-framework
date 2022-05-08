@@ -13,8 +13,10 @@ Basically an identifier. In fact, we literally have it defined as `type Entity =
 
 
 ### Component
-A bucket of state associated with an Entity. If the game has two players on screen, they may be represented as two `Entity`s, each of which have their own components to hold their state, e.g. `Position`, `Size,` `Velocity`.
+A container of state associated with an `Entity`. If the game has two players on screen, they may be represented as two `Entity`s, each of which have their own components to hold their state, e.g. `Position`, `Size`, `Velocity`.
 
 ### System
 
-An bucket for logic that operates on an `Entity`'s state (their `Component`s). If the players should fall due to gravity, perhaps we have a `Physics` system that applies gravity by changing the players' `Position` components.
+A container of logic that operates on one or more `Entity`'s state (its `Component`s). If the players should fall due to gravity, perhaps we have a `Physics` system that applies gravity by changing the player's `Position` component.
+
+
