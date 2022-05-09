@@ -1,14 +1,22 @@
-## Preparing the spritesheet
+## Drawing Mario: the spritesheet
 
-Let's prepare our spritesheet for using it in our game.
+Let's prepare our spritesheet for using it in our game. We'll use a [spritesheet](https://www.spriters-resource.com/game_boy_gbc/smbdeluxe/sheet/6811/) from Super Mario Bros. Deluxe for Gameboy. The sprites were ripped by A.J. Nitro.
 
-### Background transparency
+### Cropping
 
-Our sprite's background is pink. That's not ideal because we don't want Mario to be surrounded by a pink square in our game. Let's use ImageMagick to convert the pink pixels to transparent ones.
+The sheet contains a lot of sprites of different colors. We really only need the sprites for small-Mario in the top left. Let's crop that section out and use that as the basis for our spritesheet.
 
 First, install ImageMagick
 
 - `brew install imagemagick`
+
+Then use the `convert` utility to crop out just the part we want:
+
+- `convert source.png -crop 108x62+11+2 smb.png`
+
+### Background transparency
+
+Our sprite's background is blue. That's not ideal because we don't want Mario to be surrounded by a blue square in our game. Let's use ImageMagick to convert the blue pixels to transparent ones.
 
 First, identify the actual color of the pixels we want to convert. ImageMagick's `identify` command will provide us with tons of information about the image. Specifically, we're interested in what color has the most number of pixels, because the background is by far the most prominent color on the sheet.
 
@@ -43,5 +51,3 @@ Run the following command:
 - `convert spritesheet.png -scale "400%" -interpolate Integer -filter point spritesheet4x.png`
 
 The `interpolate` and `filter` options prevent any anti-aliasing or blending; we want to preserve Mario's pixelated style!
-
-
