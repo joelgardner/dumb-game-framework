@@ -1,5 +1,5 @@
 import { Game } from "dumb-game-framework";
-import { setUpECS } from "./mario/setup";
+import { setUpECS } from "./setup";
 
 const canvas: HTMLCanvasElement = document.querySelector(
   "#canvas"
