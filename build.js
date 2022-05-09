@@ -17,6 +17,14 @@ build({
   format: "esm",
 });
 
+build({
+  entryPoints: ["src/index.ts"],
+  bundle: true,
+  external: Object.keys(packagejson.dependencies),
+  outfile: "dist/index.cjs",
+  format: "cjs",
+});
+
 new dts.Generator({
   entry: "src/index.ts",
   output: "dist/index.d.ts",

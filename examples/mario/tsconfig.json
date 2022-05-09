@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
+    "noEmit": true,
     "allowJs": true,
     "skipLibCheck": true,
-    "moduleResolution": "node",
     "target": "es6",
+    "moduleResolution": "node",
     "esModuleInterop": true
   },
   "include": ["./src/**/*", "./test/**/*"]
