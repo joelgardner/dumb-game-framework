@@ -1,4 +1,4 @@
-import Game from "dumb-game-framework";
+import { Game } from "dumb-game-framework";
 import type { AssetId } from "dumb-game-framework";
 import {
   Vector,
