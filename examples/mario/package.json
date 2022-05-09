@@ -11,7 +11,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "dumb-game-framework": "../../",
+    "dumb-game-framework": "../../lib",
     "typescript": "^4.6.3"
   },
   "devDependencies": {
