@@ -1,4 +1,4 @@
-import { createWithContext, Actions } from "../src/v2/mario/util/fsm";
+import { createWithContext, Actions } from "../src/util/fsm";
 
 type ControllerContext = {
   xAxis: -1 | 0 | 1;

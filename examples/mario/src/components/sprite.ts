@@ -1,4 +1,5 @@
 import { ecs } from "dumb-game-framework";
+import type { AssetId } from "dumb-game-framework";
 
 type SpriteDescriptor = {
   coordinates: [number, number, number, number];

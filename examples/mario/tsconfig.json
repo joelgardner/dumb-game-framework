@@ -1,7 +1,5 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "noEmit": true,
     "allowJs": true,
     "skipLibCheck": true,
     "target": "es6",

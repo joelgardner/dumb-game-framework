@@ -1,7 +1,6 @@
 import { ecs } from "dumb-game-framework";
-const { Component } = ecs;
 
-export default class Meta extends Component {
+export default class Meta extends ecs.Component {
   private tags = new Map<string, string>();
 
   constructor(tags: { [key: string]: string }) {

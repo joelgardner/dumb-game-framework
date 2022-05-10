@@ -4,7 +4,7 @@ import { CollisionSide } from "../components/collidable";
 import { Line, Point } from "../util/math";
 
 export default class CollisionDetector extends ecs.System {
-  public ecs: ECS;
+  public ecs: ecs.ECS;
   requiredComponents = new Set<Function>([Physical, Collidable]);
 
   update(entities, _delta: number): void {

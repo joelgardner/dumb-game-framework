@@ -1,10 +1,11 @@
-import { ECS, Entity, System, Component } from "dumb-game-framework";
+import { ecs } from "dumb-game-framework";
+import type { Entity } from "dumb-game-framework";
 
-class TestComponent extends Component {
+class TestComponent extends ecs.Component {
   foo: number = 0;
 }
 
-class TestSystem extends System {
+class TestSystem extends ecs.System {
   public requiredComponents: Set<Function> = new Set([TestComponent]);
 
   public update(entities: Set<Entity>) {
@@ -15,26 +16,26 @@ class TestSystem extends System {
     });
   }
 
-  public ecs: ECS;
+  public ecs: ecs.ECS;
 }
 
 describe("ecs", () => {
   test("should allow adding components", () => {
-    const ecs = new ECS();
-    const entity = ecs.addEntity();
+    const _ecs = new ecs.ECS();
+    const entity = _ecs.addEntity();
     const component = new TestComponent();
-    ecs.addComponent(entity, component);
-    expect(ecs.getComponents(entity).count()).toBe(1);
+    _ecs.addComponent(entity, component);
+    expect(_ecs.getComponents(entity).count()).toBe(1);
   });
 
   test("should allow adding systems that update components", () => {
-    const ecs = new ECS();
-    const entity = ecs.addEntity();
+    const _ecs = new ecs.ECS();
+    const entity = _ecs.addEntity();
     const component = new TestComponent();
-    ecs.addComponent(entity, component);
-    ecs.addSystem(new TestSystem());
+    _ecs.addComponent(entity, component);
+    _ecs.addSystem(new TestSystem());
     expect(component.foo).toBe(0);
-    ecs.update(performance.now());
+    _ecs.update(performance.now());
     expect(component.foo).toBe(1);
   });
 });
