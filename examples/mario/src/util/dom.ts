@@ -62,9 +62,9 @@ export function createBackingCanvas(
   const canvas = document.createElement("canvas");
   canvas.id = "world-canvas";
   canvas.classList.add("mario-canvas");
-  canvas.style.position = "absolute"
-  canvas.style.top = "0"
-  canvas.style.zIndex = "0"
+  canvas.style.position = "absolute";
+  canvas.style.top = "0";
+  canvas.style.zIndex = "0";
 
   const content = document.querySelector(contentSelector);
   content.parentElement.insertBefore(canvas, content);
@@ -92,55 +92,31 @@ function splitSectionsByWord(sectionSelector: string) {
  * so that each word of text is contained within its own span element.
  * This allows us to easily get a bounding box per word, which can then
  * be used to add a (transparent) physical entity to the game world.
- *
- * We use a regex to parse out beginning & ending whitespace that must be
- * preserved in order to not introduce any visible changes to the content.
  */
-const whitespacePreservationRegex = new RegExp(/^(\s*)([\s\S]*?)(\s*)$/);
-
 function splitChildrenByWord(element: HTMLElement): (HTMLElement | Text)[] {
   if (element.nodeType === Node.TEXT_NODE) {
-    const matches = whitespacePreservationRegex.exec(element.textContent);
-    const preWhitespace = matches[1];
-    const content = matches[2];
-    const postWhitespace = matches[3];
+    return element.textContent.split(/(\s+)/).map((text) => {
+      // Preserve any whitespace. Previously we just inserted a single space
+      // between each word. But that breaks in the case of <pre> blocks.
+      if (text.match(/\s+/)) {
+        return document.createTextNode(text);
+      }
 
-    return !content
-      ? [element]
-      : [
-          document.createTextNode(preWhitespace),
-          ...content
-            .split(/\s+/)
-            .map((text) => {
-              const punchableWord = document.createElement(
-                "span"
-              ) as HTMLSpanElement;
-              punchableWord.id = `punchable-word-${++elementCount}`;
-              punchableWord.classList.add("punchable-word");
-              punchableWord.appendChild(document.createTextNode(text));
-              return punchableWord;
-            })
-            .reduce((result, element, i) => {
-              // If this is not the first element,
-              // inject a space before each element
-              return result
-                .concat(i ? document.createTextNode(" ") : [])
-                .concat(element);
-            }, []),
-          document.createTextNode(postWhitespace),
-        ];
+      const punchableWord = document.createElement("span") as HTMLSpanElement;
+      punchableWord.id = `punchable-word-${++elementCount}`;
+      punchableWord.classList.add("punchable-word");
+      punchableWord.appendChild(document.createTextNode(text));
+      return punchableWord;
+    });
   }
 
   // Don't descend further if we've already done this, i.e.,
   // this is happening while handling a window resize event.
-  if (element.classList.contains("punchable-word")) {
-    return [element];
+  if (!element.classList.contains("punchable-word")) {
+    element.replaceChildren(
+      ...Array.from(element.childNodes).flatMap(splitChildrenByWord)
+    );
   }
-
-  // Recursively replace each word of text with its own span
-  element.replaceChildren(
-    ...Array.from(element.childNodes).flatMap(splitChildrenByWord)
-  );
 
   return [element];
 }
