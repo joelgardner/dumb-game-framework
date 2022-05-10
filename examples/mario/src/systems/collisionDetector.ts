@@ -56,7 +56,7 @@ export default class CollisionDetector extends ecs.System {
           // If Mario's top side collided, then we know he's
           // punched a word-entity, and we need to delete it.
           if (side === CollisionSide.Top) {
-            // this.ecs.markEntityForDeletion(jEntity);
+            this.ecs.markEntityForDeletion(jEntity);
           }
         }
 

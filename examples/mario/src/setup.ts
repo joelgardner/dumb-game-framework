@@ -6,7 +6,7 @@ import {
   Controller,
   Collidable,
   PlayerState,
-  Drawable,
+  Meta,
   Physical,
 } from "./components";
 import {
@@ -18,13 +18,18 @@ import {
   DebugRenderer,
   CollisionDetector,
   PlayerStateManager,
+  EventEmitter,
 } from "./systems";
 import { Direction } from "./util/enums";
 import { PlayerMovement } from "./systems/playerMovement";
 import { Color } from "./components/drawable";
+import { PhysicalProperties } from "./components/physical";
 
+type Word = { id: string } & PhysicalProperties;
 type MarioDependencies = {
   canvas: HTMLCanvasElement;
+  words: Word[];
+  onWordCollision: (elementId: string) => void;
   assets: { mario: AssetId };
 };
 
@@ -60,58 +65,91 @@ export function setUpECS(game: Game, dependencies: MarioDependencies) {
   const floor = game.ecs.addEntity();
   game.ecs.addComponent(
     floor,
-    new Physical(
-      0,
-      dependencies.canvas.height - 10,
-      dependencies.canvas.width,
-      10
-    )
+    new Physical(0, dependencies.canvas.height, dependencies.canvas.width, 0)
   );
   game.ecs.addComponent(floor, new Collidable());
-  game.ecs.addComponent(floor, new Drawable(Color.Black));
-
-  const ceiling = game.ecs.addEntity();
-  game.ecs.addComponent(
-    ceiling,
-    new Physical(0, 0, dependencies.canvas.width, 10)
-  );
-  game.ecs.addComponent(ceiling, new Collidable());
-  game.ecs.addComponent(ceiling, new Drawable(Color.Black));
 
   const leftWall = game.ecs.addEntity();
   game.ecs.addComponent(
     leftWall,
-    new Physical(0, 0, 10, dependencies.canvas.height)
+    new Physical(0, 0, 0, dependencies.canvas.height)
   );
   game.ecs.addComponent(leftWall, new Collidable());
-  game.ecs.addComponent(leftWall, new Drawable(Color.Black));
 
   const rightWall = game.ecs.addEntity();
   game.ecs.addComponent(
     rightWall,
-    new Physical(
-      dependencies.canvas.width - 10,
-      0,
-      10,
-      dependencies.canvas.height
-    )
+    new Physical(dependencies.canvas.width, 0, 0, dependencies.canvas.height)
   );
   game.ecs.addComponent(rightWall, new Collidable());
-  game.ecs.addComponent(rightWall, new Drawable(Color.Black));
 
-  // Middle block
-  const block = game.ecs.addEntity();
-  game.ecs.addComponent(
-    block,
-    new Physical(
-      dependencies.canvas.width / 2 - 25,
-      dependencies.canvas.height / 2 - 25,
-      50,
-      50
-    )
-  );
-  game.ecs.addComponent(block, new Collidable());
-  game.ecs.addComponent(block, new Drawable(Color.Black));
+  // Words
+  dependencies.words.forEach((word) => {
+    const wordEntity = game.ecs.addEntity();
+    game.ecs.addComponent(wordEntity, new Meta({ id: word.id }));
+    game.ecs.addComponent(
+      wordEntity,
+      new Physical(word.x, word.y, word.width, word.height)
+    );
+    game.ecs.addComponent(wordEntity, new Collidable());
+  });
+
+  //   // Boundary walls
+  //   const floor = game.ecs.addEntity();
+  //   game.ecs.addComponent(
+  //     floor,
+  //     new Physical(
+  //       0,
+  //       dependencies.canvas.height - 10,
+  //       dependencies.canvas.width,
+  //       10
+  //     )
+  //   );
+  //   game.ecs.addComponent(floor, new Collidable());
+  //   game.ecs.addComponent(floor, new Drawable(Color.Black));
+  //
+  //   const ceiling = game.ecs.addEntity();
+  //   game.ecs.addComponent(
+  //     ceiling,
+  //     new Physical(0, 0, dependencies.canvas.width, 10)
+  //   );
+  //   game.ecs.addComponent(ceiling, new Collidable());
+  //   game.ecs.addComponent(ceiling, new Drawable(Color.Black));
+  //
+  //   const leftWall = game.ecs.addEntity();
+  //   game.ecs.addComponent(
+  //     leftWall,
+  //     new Physical(0, 0, 10, dependencies.canvas.height)
+  //   );
+  //   game.ecs.addComponent(leftWall, new Collidable());
+  //   game.ecs.addComponent(leftWall, new Drawable(Color.Black));
+  //
+  //   const rightWall = game.ecs.addEntity();
+  //   game.ecs.addComponent(
+  //     rightWall,
+  //     new Physical(
+  //       dependencies.canvas.width - 10,
+  //       0,
+  //       10,
+  //       dependencies.canvas.height
+  //     )
+  //   );
+  //   game.ecs.addComponent(rightWall, new Collidable());
+  //   game.ecs.addComponent(rightWall, new Drawable(Color.Black));
+  //
+  //   // Middle block
+  //   const block = game.ecs.addEntity();
+  //   game.ecs.addComponent(
+  //     block,
+  //     new Physical(
+  //       dependencies.canvas.width / 2 - 25,
+  //       dependencies.canvas.height / 2 - 25,
+  //       50,
+  //       50
+  //     )
+  //   );
+  //   game.ecs.addComponent(block, new Collidable());
+  //   game.ecs.addComponent(block, new Drawable(Color.Black));
 
   // Systems
   game.ecs.addSystem(new InputHandler());
@@ -122,5 +160,7 @@ export function setUpECS(game: Game, dependencies: MarioDependencies) {
   game.ecs.addSystem(new Locator());
   game.ecs.addSystem(new SpriteRenderer(dependencies.canvas, game.getAsset));
   game.ecs.addSystem(new Drawer(dependencies.canvas));
+  game.ecs.addSystem(new EventEmitter(dependencies.onWordCollision));
+
   // game.ecs.addSystem(new DebugRenderer(dependencies.canvas));
 }

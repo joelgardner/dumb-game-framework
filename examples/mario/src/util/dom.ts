@@ -62,6 +62,9 @@ export function createBackingCanvas(
   const canvas = document.createElement("canvas");
   canvas.id = "world-canvas";
   canvas.classList.add("mario-canvas");
+  canvas.style.position = "absolute"
+  canvas.style.top = "0"
+  canvas.style.zIndex = "0"
 
   const content = document.querySelector(contentSelector);
   content.parentElement.insertBefore(canvas, content);
