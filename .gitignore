@@ -3,4 +3,4 @@ node_modules
 .nvimlog
 dist/
 NvimTree_1
-
+lib/

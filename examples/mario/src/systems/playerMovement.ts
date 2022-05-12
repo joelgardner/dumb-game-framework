@@ -157,7 +157,7 @@ type JumpState =
   | { stage: "impulse"; atFrame: number }
   | { stage: "terminated" };
 
-export class PlayerMovement extends ecs.System {
+export default class PlayerMovement extends ecs.System {
   public ecs: ecs.ECS;
   private jumpingFSM: JumpingFSMWrapper;
 

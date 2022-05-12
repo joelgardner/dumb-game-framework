@@ -6,3 +6,5 @@ export { default as Drawable } from "./drawable";
 export { default as PlayerState } from "./playerState";
 export { default as Collidable } from "./collidable";
 export { default as Meta } from "./meta";
+
+export type { PhysicalProperties } from "./physical";

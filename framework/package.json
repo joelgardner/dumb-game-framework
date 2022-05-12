@@ -6,6 +6,7 @@
   "types": "dist/index.d.ts",
   "type": "module",
   "scripts": {
+    "package-all": "cd ../examples/mario && node build.js && sed -i '' -e 's/src\\///g' dist/index.d.ts && sed -i '' -e \"s/examples\\/mario\\'/lib/examples\\/mario\\'/g\" dist/index.d.ts && cp dist/* ../../framework/lib/examples/mario",
     "build": "node build.js && sed -i '' -e 's/src\\///g' dist/index.d.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -16,12 +16,12 @@ import {
   Drawer,
   InputHandler,
   DebugRenderer,
+  PlayerMovement,
   CollisionDetector,
   PlayerStateManager,
   EventEmitter,
 } from "./systems";
 import { Direction } from "./util/enums";
-import { PlayerMovement } from "./systems/playerMovement";
 import { Color } from "./components/drawable";
 import { PhysicalProperties } from "./components/physical";
 
