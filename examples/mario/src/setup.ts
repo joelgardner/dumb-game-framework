@@ -1,5 +1,5 @@
-import { Game } from "dumb-game-framework";
-import type { AssetId } from "dumb-game-framework";
+import { ecs as _ecs } from "dumb-game-framework";
+import type { AssetId, Asset } from "dumb-game-framework";
 import {
   Vector,
   Sprite,
@@ -22,15 +22,15 @@ import {
   EventEmitter,
 } from "./systems";
 import { Direction } from "./util/enums";
-import { Color } from "./components/drawable";
 import { PhysicalProperties } from "./components/physical";
 
 type Word = { id: string } & PhysicalProperties;
 type MarioDependencies = {
-  canvas: HTMLCanvasElement;
-  words: Word[];
-  onWordCollision: (elementId: string) => void;
   assets: { mario: AssetId };
+  getAsset: (assetId: AssetId) => Asset;
+  canvas: HTMLCanvasElement;
+  onWordCollision: (elementId: string) => void;
+  words: Word[];
 };
 
 type MarioSprite =
@@ -41,126 +41,65 @@ type MarioSprite =
   | "runningStanding"
   | "runningSkate";
 
-export function setUpECS(game: Game, dependencies: MarioDependencies) {
-  // Mario
-  const mario = game.ecs.addEntity();
-  game.ecs.addComponent(mario, new Vector(0, 0));
-  game.ecs.addComponent(mario, new Physical(80, 80, 48, 64));
-  game.ecs.addComponent(mario, new Collidable());
-  game.ecs.addComponent(mario, new Controller());
-  game.ecs.addComponent(mario, new PlayerState(Direction.RIGHT));
-  game.ecs.addComponent(
-    mario,
-    new Sprite<MarioSprite>(dependencies.assets.mario, {
-      idle: { coordinates: [4, 12, 48, 64], offset: [24, 0] },
-      braking: { coordinates: [4, 96, 54, 64], offset: [24, 0] },
-      airborne: { coordinates: [72, 12, 64, 64], offset: [24, 0] },
-      runningLongStride: { coordinates: [75, 96, 62, 64], offset: [24, 0] },
-      runningStanding: { coordinates: [150, 96, 52, 64], offset: [24, 0] },
-      runningSkate: { coordinates: [220, 98, 52, 64], offset: [24, 0] },
-    })
-  );
-
-  // Boundary walls
-  const floor = game.ecs.addEntity();
-  game.ecs.addComponent(
-    floor,
-    new Physical(0, dependencies.canvas.height, dependencies.canvas.width, 0)
-  );
-  game.ecs.addComponent(floor, new Collidable());
-
-  const leftWall = game.ecs.addEntity();
-  game.ecs.addComponent(
-    leftWall,
-    new Physical(0, 0, 0, dependencies.canvas.height)
-  );
-  game.ecs.addComponent(leftWall, new Collidable());
-
-  const rightWall = game.ecs.addEntity();
-  game.ecs.addComponent(
-    rightWall,
-    new Physical(dependencies.canvas.width, 0, 0, dependencies.canvas.height)
-  );
-  game.ecs.addComponent(rightWall, new Collidable());
-
-  // Words
-  dependencies.words.forEach((word) => {
-    const wordEntity = game.ecs.addEntity();
-    game.ecs.addComponent(wordEntity, new Meta({ id: word.id }));
-    game.ecs.addComponent(
-      wordEntity,
-      new Physical(word.x, word.y, word.width, word.height)
+export function ecsSetup(dependencies: MarioDependencies) {
+  const { getAsset, canvas, assets, words, onWordCollision } = dependencies;
+  return function (ecs: _ecs.ECS) {
+    // Mario
+    const mario = ecs.addEntity();
+    ecs.addComponent(mario, new Vector(0, 0));
+    ecs.addComponent(mario, new Physical(80, 0, 48, 64));
+    ecs.addComponent(mario, new Collidable());
+    ecs.addComponent(mario, new Controller());
+    ecs.addComponent(mario, new PlayerState(Direction.RIGHT));
+    ecs.addComponent(
+      mario,
+      new Sprite<MarioSprite>(assets.mario, {
+        idle: { coordinates: [4, 12, 48, 64], offset: [24, 0] },
+        braking: { coordinates: [4, 96, 54, 64], offset: [24, 0] },
+        airborne: { coordinates: [72, 12, 64, 64], offset: [24, 0] },
+        runningLongStride: { coordinates: [75, 96, 62, 64], offset: [24, 0] },
+        runningStanding: { coordinates: [150, 96, 52, 64], offset: [24, 0] },
+        runningSkate: { coordinates: [220, 98, 52, 64], offset: [24, 0] },
+      })
     );
-    game.ecs.addComponent(wordEntity, new Collidable());
-  });
 
-  //   // Boundary walls
-  //   const floor = game.ecs.addEntity();
-  //   game.ecs.addComponent(
-  //     floor,
-  //     new Physical(
-  //       0,
-  //       dependencies.canvas.height - 10,
-  //       dependencies.canvas.width,
-  //       10
-  //     )
-  //   );
-  //   game.ecs.addComponent(floor, new Collidable());
-  //   game.ecs.addComponent(floor, new Drawable(Color.Black));
-  //
-  //   const ceiling = game.ecs.addEntity();
-  //   game.ecs.addComponent(
-  //     ceiling,
-  //     new Physical(0, 0, dependencies.canvas.width, 10)
-  //   );
-  //   game.ecs.addComponent(ceiling, new Collidable());
-  //   game.ecs.addComponent(ceiling, new Drawable(Color.Black));
-  //
-  //   const leftWall = game.ecs.addEntity();
-  //   game.ecs.addComponent(
-  //     leftWall,
-  //     new Physical(0, 0, 10, dependencies.canvas.height)
-  //   );
-  //   game.ecs.addComponent(leftWall, new Collidable());
-  //   game.ecs.addComponent(leftWall, new Drawable(Color.Black));
-  //
-  //   const rightWall = game.ecs.addEntity();
-  //   game.ecs.addComponent(
-  //     rightWall,
-  //     new Physical(
-  //       dependencies.canvas.width - 10,
-  //       0,
-  //       10,
-  //       dependencies.canvas.height
-  //     )
-  //   );
-  //   game.ecs.addComponent(rightWall, new Collidable());
-  //   game.ecs.addComponent(rightWall, new Drawable(Color.Black));
-  //
-  //   // Middle block
-  //   const block = game.ecs.addEntity();
-  //   game.ecs.addComponent(
-  //     block,
-  //     new Physical(
-  //       dependencies.canvas.width / 2 - 25,
-  //       dependencies.canvas.height / 2 - 25,
-  //       50,
-  //       50
-  //     )
-  //   );
-  //   game.ecs.addComponent(block, new Collidable());
-  //   game.ecs.addComponent(block, new Drawable(Color.Black));
+    // Boundary walls
+    const floor = ecs.addEntity();
+    ecs.addComponent(floor, new Physical(0, canvas.height, canvas.width, 0));
+    ecs.addComponent(floor, new Collidable());
 
-  // Systems
-  game.ecs.addSystem(new InputHandler());
-  game.ecs.addSystem(new PlayerMovement());
-  game.ecs.addSystem(new CollisionDetector());
-  game.ecs.addSystem(new Physics());
-  game.ecs.addSystem(new PlayerStateManager());
-  game.ecs.addSystem(new Locator());
-  game.ecs.addSystem(new SpriteRenderer(dependencies.canvas, game.getAsset));
-  game.ecs.addSystem(new Drawer(dependencies.canvas));
-  game.ecs.addSystem(new EventEmitter(dependencies.onWordCollision));
+    const leftWall = ecs.addEntity();
+    ecs.addComponent(leftWall, new Physical(0, 0, 0, canvas.height));
+    ecs.addComponent(leftWall, new Collidable());
 
-  // game.ecs.addSystem(new DebugRenderer(dependencies.canvas));
+    const rightWall = ecs.addEntity();
+    ecs.addComponent(
+      rightWall,
+      new Physical(canvas.width, 0, 0, canvas.height)
+    );
+    ecs.addComponent(rightWall, new Collidable());
+
+    // Words
+    words.forEach((word) => {
+      const wordEntity = ecs.addEntity();
+      ecs.addComponent(wordEntity, new Meta({ id: word.id }));
+      ecs.addComponent(
+        wordEntity,
+        new Physical(word.x, word.y, word.width, word.height)
+      );
+      ecs.addComponent(wordEntity, new Collidable());
+    });
+
+    // Systems
+    ecs.addSystem(new InputHandler());
+    ecs.addSystem(new PlayerMovement());
+    ecs.addSystem(new CollisionDetector());
+    ecs.addSystem(new Physics());
+    ecs.addSystem(new PlayerStateManager());
+    ecs.addSystem(new Locator());
+    ecs.addSystem(new SpriteRenderer(canvas, getAsset));
+    ecs.addSystem(new Drawer(canvas));
+    ecs.addSystem(new EventEmitter(onWordCollision));
+    ecs.addSystem(new DebugRenderer(canvas));
+  };
 }

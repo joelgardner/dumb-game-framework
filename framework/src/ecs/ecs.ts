@@ -67,6 +67,11 @@ export default class ECS {
     }
   }
 
+  build(callback: (ecs: ECS) => void) {
+    this.clear();
+    callback(this);
+  }
+
   clear() {
     this.entities.clear();
     this.systems.clear();
