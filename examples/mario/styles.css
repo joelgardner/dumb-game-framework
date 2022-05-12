@@ -1,0 +1,169 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Merriweather";
+  src: url("../assets/fonts/Merriweather/Merriweather-Regular.ttf")
+    format("truetype");
+}
+
+@font-face {
+  font-family: "Merriweather-Bold";
+  src: url("../assets/fonts/Merriweather/Merriweather-Bold.ttf")
+    format("truetype");
+}
+
+@font-face {
+  font-family: "Merriweather-Italic";
+  src: url("../assets/fonts/Merriweather/Merriweather-Italic.ttf")
+    format("truetype");
+}
+
+@font-face {
+  font-family: "Open-Sans";
+  src: url("../assets/fonts/OpenSans/OpenSans-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Open-Sans-Bold";
+  src: url("../assets/fonts/OpenSans/OpenSans-Bold.ttf") format("truetype");
+}
+
+body {
+  display: block;
+}
+
+.punched {
+  visibility: hidden;
+}
+
+canvas.mario-canvas {
+  position: absolute;
+  top: 0;
+  z-index: 0;
+  background-color: #ffffff;
+}
+
+a {
+  color: #1156cc;
+}
+
+.title {
+  font-family: "Merriweather-Bold";
+  font-size: 2.5rem;
+}
+
+.byline {
+  font-family: "Open-Sans";
+  font-size: 0.8rem;
+}
+
+.section-header {
+  font-family: "Open-Sans-Bold";
+  font-size: 0.8rem;
+  color: #1f79c7;
+  text-transform: uppercase;
+}
+
+.item-section-header {
+  font-size: 1rem;
+}
+
+.item-section-header-company {
+  font-family: "Merriweather-Bold";
+}
+
+.item-section-header-role {
+  font-family: "Merriweather-Italic";
+}
+
+.item-section-byline {
+  font-size: 0.65rem;
+  font-family: "Open-Sans";
+  color: #767676;
+  text-transform: uppercase;
+}
+
+.item-section-description {
+  font-size: 0.75rem;
+  font-family: "Merriweather";
+  color: #666666;
+  line-height: 1.2rem;
+}
+
+.contact-info {
+  font-family: "Open-Sans";
+  font-size: 0.75rem;
+}
+
+strong {
+  font-family: "Merriweather-Bold";
+}
+
+.section-header strong {
+  font-family: "Open-Sans-Bold";
+}
+
+.explode-vertical {
+  animation-duration: 1s;
+  position: absolute;
+  animation-name: explode-v;
+  animation-fill-mode: forwards;
+}
+
+@keyframes explode-v {
+  from {
+    transform: translateY(0%);
+    animation-timing-function: cubic-bezier(0.31, 0.78, 0.56, 1);
+  }
+
+  to {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+}
+
+.explode-horizontal {
+  animation-duration: 1s;
+  position: absolute;
+  animation-name: explode-h;
+  animation-fill-mode: forwards;
+  animation-timing-function: linear;
+}
+
+@keyframes explode-h {
+  from {
+    transform: translateX(0%);
+  }
+
+  50% {
+    transform: translateX(150px);
+  }
+
+  to {
+    transform: translateX(300px);
+  }
+}
+
+@layer components {
+  .mario-canvas {
+    @apply container;
+  }
+
+  .section-header {
+    @apply mt-6 mb-3;
+  }
+
+  .item-section {
+    @apply mb-6 pr-8;
+  }
+
+  .item-section-header {
+    @apply mb-1;
+  }
+
+  .item-section-byline {
+    @apply mb-1;
+  }
+}
