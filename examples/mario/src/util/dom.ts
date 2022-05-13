@@ -95,19 +95,22 @@ function splitSectionsByWord(sectionSelector: string) {
  */
 function splitChildrenByWord(element: HTMLElement): (HTMLElement | Text)[] {
   if (element.nodeType === Node.TEXT_NODE) {
-    return element.textContent.split(/(\s+)/).map((text) => {
-      // Preserve any whitespace. Previously we just inserted a single space
-      // between each word. But that breaks in the case of <pre> blocks.
-      if (text.match(/\s+/)) {
-        return document.createTextNode(text);
-      }
+    return element.textContent
+      .split(/(\s+)/)
+      .filter(Boolean)
+      .map((text) => {
+        // Preserve any whitespace. Previously we just inserted a single space
+        // between each word. But that breaks in the case of <pre> blocks.
+        if (text.match(/\s+/)) {
+          return document.createTextNode(text);
+        }
 
-      const punchableWord = document.createElement("span") as HTMLSpanElement;
-      punchableWord.id = `punchable-word-${++elementCount}`;
-      punchableWord.classList.add("punchable-word");
-      punchableWord.appendChild(document.createTextNode(text));
-      return punchableWord;
-    });
+        const punchableWord = document.createElement("span") as HTMLSpanElement;
+        punchableWord.id = `punchable-word-${++elementCount}`;
+        punchableWord.classList.add("punchable-word");
+        punchableWord.appendChild(document.createTextNode(text));
+        return punchableWord;
+      });
   }
 
   // Don't descend further if we've already done this, i.e.,
