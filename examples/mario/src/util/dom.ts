@@ -19,14 +19,22 @@ export function animatePunch(elementSelector: string) {
   clone.classList.add("explode-vertical");
   clone.innerText = element.innerText;
 
-  // Use the bounding box of the word Mario punched
-  // to set the top/left offsets for the clone that
-  // will be inserted and animated.
-  // @ts-ignore
-  const offsetLeft = element.offsetParent.offsetLeft;
+  // If Mario punches a word at the beginning of a line,
+  // Chrome and Firefox will actually start the animation from
+  // the end of the previous line, which is visually jarring.
+  // This hack fixes that issue by detecting if the word exists
+  // as the first word on a line and if so, sets the left/top 
+  // properties to prevent this "reverse line-break" issue.
   const elementRect = element.getBoundingClientRect();
-  clone.style.left = `${elementRect.x - offsetLeft}px`;
-  clone.style.top = `${elementRect.y}px`;
+  const parentRect = element.parentElement.getBoundingClientRect();
+  if (elementRect.x === parentRect.x && element.previousElementSibling) {
+    // @ts-ignore
+    const offsetLeft = element.offsetParent.offsetLeft;
+    // @ts-ignore
+    const offsetTop = element.offsetParent.offsetTop;
+    clone.style.left = `${elementRect.x - (offsetLeft - window.pageXOffset)}px`;
+    clone.style.top = `${elementRect.y - (offsetTop - window.pageYOffset)}px`;
+  }
 
   // Insert the cloned element just before the punched
   // word and start the animation.
@@ -105,7 +113,7 @@ function splitSectionsByWord(sectionSelector: string) {
 function splitChildrenByWord(element: HTMLElement): (HTMLElement | Text)[] {
   if (element.nodeType === Node.TEXT_NODE) {
     return element.textContent
-      .split(/(\s+)/)
+      .split(/(\s+|-+)/)
       .filter(Boolean)
       .map((text) => {
         // Preserve any whitespace. Previously we just inserted a single space
