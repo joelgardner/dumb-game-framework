@@ -42,3 +42,44 @@ export default class KeyboardInputManager {
     this.handlers.get(key)?.({ key, state: 0 });
   };
 }
+
+export type MyTouchEvent = {
+  position: { x: number; y: number };
+  state: ButtonState;
+};
+type TouchEventCallback = (event: MyTouchEvent) => void;
+export class TouchInputManager {
+  private handlers = new Set<TouchEventCallback>();
+
+  public bind(callback: (event: MyTouchEvent) => void) {
+    this.handlers.add(callback);
+  }
+
+  public listen() {
+    window.addEventListener("touchstart", this.handleOnTouch);
+    window.addEventListener("touchmove", this.handleOnTouch);
+    window.addEventListener("touchend", this.handleOnTouchEnd);
+    window.addEventListener("touchcancel", this.handleOnTouchEnd);
+  }
+
+  public stopListening() {
+    window.removeEventListener("touchstart", this.handleOnTouch);
+    window.removeEventListener("touchmove", this.handleOnTouch);
+    window.removeEventListener("touchend", this.handleOnTouchEnd);
+    window.removeEventListener("touchcancel", this.handleOnTouchEnd);
+  }
+
+  private handleOnTouch = (e: TouchEvent) => {
+    this.handlers.forEach((handler) => {
+      // @ts-ignore
+      handler({ position: { x: e.layerX, y: e.layerY }, state: 1 });
+    });
+  };
+
+  private handleOnTouchEnd = (e: TouchEvent) => {
+    this.handlers.forEach((handler) =>
+      // @ts-ignore
+      handler({ position: { x: e.layerX, y: e.layerY }, state: 0 })
+    );
+  };
+}

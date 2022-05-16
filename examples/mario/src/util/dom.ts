@@ -19,6 +19,15 @@ export function animatePunch(elementSelector: string) {
   clone.classList.add("explode-vertical");
   clone.innerText = element.innerText;
 
+  // Use the bounding box of the word Mario punched
+  // to set the top/left offsets for the clone that
+  // will be inserted and animated.
+  // @ts-ignore
+  const offsetLeft = element.offsetParent.offsetLeft;
+  const elementRect = element.getBoundingClientRect();
+  clone.style.left = `${elementRect.x - offsetLeft}px`;
+  clone.style.top = `${elementRect.y}px`;
+
   // Insert the cloned element just before the punched
   // word and start the animation.
   element.parentElement.insertBefore(clone, element);

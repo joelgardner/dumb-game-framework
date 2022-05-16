@@ -27,8 +27,9 @@ import { PhysicalProperties } from "./components/physical";
 type Word = { id: string } & PhysicalProperties;
 type MarioDependencies = {
   assets: { mario: AssetId };
-  getAsset: (assetId: AssetId) => Asset;
   canvas: HTMLCanvasElement;
+  debug: boolean;
+  getAsset: (assetId: AssetId) => Asset;
   onWordCollision: (elementId: string) => void;
   words: Word[];
 };
@@ -42,12 +43,13 @@ type MarioSprite =
   | "runningSkate";
 
 export function ecsSetup(dependencies: MarioDependencies) {
-  const { getAsset, canvas, assets, words, onWordCollision } = dependencies;
+  const { getAsset, canvas, debug, assets, words, onWordCollision } =
+    dependencies;
   return function (ecs: _ecs.ECS) {
     // Mario
     const mario = ecs.addEntity();
     ecs.addComponent(mario, new Vector(0, 0));
-    ecs.addComponent(mario, new Physical(80, 0, 48, 64));
+    ecs.addComponent(mario, new Physical(575, 0, 48, 64));
     ecs.addComponent(mario, new Collidable());
     ecs.addComponent(mario, new Controller());
     ecs.addComponent(mario, new PlayerState(Direction.RIGHT));
@@ -100,6 +102,8 @@ export function ecsSetup(dependencies: MarioDependencies) {
     ecs.addSystem(new SpriteRenderer(canvas, getAsset));
     ecs.addSystem(new Drawer(canvas));
     ecs.addSystem(new EventEmitter(onWordCollision));
-    ecs.addSystem(new DebugRenderer(canvas));
+    if (debug) {
+      ecs.addSystem(new DebugRenderer(canvas));
+    }
   };
 }
