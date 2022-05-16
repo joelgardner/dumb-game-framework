@@ -23,17 +23,17 @@ export function animatePunch(elementSelector: string) {
   // Chrome and Firefox will actually start the animation from
   // the end of the previous line, which is visually jarring.
   // This hack fixes that issue by detecting if the word exists
-  // as the first word on a line and if so, sets the left/top 
+  // as the first word on a line and if so, sets the left/top
   // properties to prevent this "reverse line-break" issue.
   const elementRect = element.getBoundingClientRect();
   const parentRect = element.parentElement.getBoundingClientRect();
   if (elementRect.x === parentRect.x && element.previousElementSibling) {
     // @ts-ignore
-    const offsetLeft = element.offsetParent.offsetLeft;
+    const offsetLeft = window.pageXOffset - element.offsetParent.offsetLeft;
     // @ts-ignore
-    const offsetTop = element.offsetParent.offsetTop;
-    clone.style.left = `${elementRect.x - (offsetLeft - window.pageXOffset)}px`;
-    clone.style.top = `${elementRect.y - (offsetTop - window.pageYOffset)}px`;
+    const offsetTop = window.pageYOffset - element.offsetParent.offsetTop;
+    clone.style.left = `${elementRect.x + offsetLeft}px`;
+    clone.style.top = `${elementRect.y + offsetTop}px`;
   }
 
   // Insert the cloned element just before the punched
