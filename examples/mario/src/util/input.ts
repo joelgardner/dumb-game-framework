@@ -43,15 +43,15 @@ export default class KeyboardInputManager {
   };
 }
 
-export type MyTouchEvent = {
+export type TouchEvent2 = {
   position: { x: number; y: number };
   state: ButtonState;
 };
-type TouchEventCallback = (event: MyTouchEvent) => void;
+type TouchEventCallback = (event: TouchEvent2) => void;
 export class TouchInputManager {
   private handlers = new Set<TouchEventCallback>();
 
-  public bind(callback: (event: MyTouchEvent) => void) {
+  public bind(callback: (event: TouchEvent2) => void) {
     this.handlers.add(callback);
   }
 
