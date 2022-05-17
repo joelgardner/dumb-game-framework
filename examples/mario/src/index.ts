@@ -11,18 +11,22 @@ linkElement.onload = function () {
     const container = "#world";
     const canvas: HTMLCanvasElement = Dom.createBackingCanvas(container);
 
-    let w = canvas.clientWidth;
+    let { innerWidth } = window;
     window.addEventListener("resize", () => {
-      if (w === canvas.clientWidth) {
+      // We check that only the width changed because on
+      // mobile devices, the height of the window can change
+      // quite often, resulting in unnecessary resizes, which
+      // means Mario jumps to his starting position incorrectly
+      if (innerWidth === window.innerWidth) {
         return;
-      } else {
-        w = canvas.clientWidth;
       }
+
       Dom.setSizeToMatch(canvas, container);
       game.ecs.clear();
       const hitboxes = Dom.getWordHitboxes(container);
       const words = hitboxes.map(({ id, hitbox }) => ({ id, ...hitbox }));
       game.ecs.build(ecsSetup({ ...dependencies, words }));
+      innerWidth = window.innerWidth;
     });
 
     const hitboxes = Dom.getWordHitboxes("#world");

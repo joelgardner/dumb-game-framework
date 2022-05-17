@@ -1,4 +1,4 @@
-import { ecs } from "dumb-game-framework";
+import { ecs, Entity } from "dumb-game-framework";
 import { Physical, Vector, Collidable } from "../components";
 import { CollisionSide } from "../components/collidable";
 import { Line, Point } from "../util/math";
@@ -7,8 +7,8 @@ export default class CollisionDetector extends ecs.System {
   public ecs: ecs.ECS;
   requiredComponents = new Set<Function>([Physical, Collidable]);
 
-  update(entities, _delta: number): void {
-    entities.forEach((iEntity) => {
+  update(entities: Set<Entity>, _delta: number): void {
+    entities.forEach((iEntity: Entity) => {
       const components = this.ecs.getComponents(iEntity);
 
       // Optimization: only calculate collisions for entities
@@ -30,7 +30,7 @@ export default class CollisionDetector extends ecs.System {
         iPhysical.y + iPhysical.height
       );
 
-      entities.forEach((jEntity) => {
+      entities.forEach((jEntity: Entity) => {
         // Mario can't collide with himself
         if (iEntity === jEntity) {
           return;

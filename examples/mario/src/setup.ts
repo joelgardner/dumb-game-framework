@@ -49,7 +49,7 @@ export function ecsSetup(dependencies: MarioDependencies) {
     // Mario
     const mario = ecs.addEntity();
     ecs.addComponent(mario, new Vector(0, 0));
-    ecs.addComponent(mario, new Physical(575, 0, 48, 64));
+    ecs.addComponent(mario, new Physical(204, -48, 48, 64));
     ecs.addComponent(mario, new Collidable());
     ecs.addComponent(mario, new Controller());
     ecs.addComponent(mario, new PlayerState(Direction.RIGHT));
