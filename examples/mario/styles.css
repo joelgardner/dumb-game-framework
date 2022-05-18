@@ -146,6 +146,11 @@ strong {
   }
 }
 
+.alert-hidden {
+  opacity: 0;
+  transition: 0.25s;
+}
+
 @layer components {
   .mario-canvas {
     @apply container;

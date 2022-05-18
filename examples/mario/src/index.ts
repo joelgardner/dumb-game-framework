@@ -52,3 +52,8 @@ linkElement.onload = function () {
   });
 };
 document.head.appendChild(linkElement);
+
+const closeAlertBtn = document.querySelector("#alert-close-btn");
+closeAlertBtn.addEventListener("click", (_e) => {
+  document.querySelector("#alert").classList.add("alert-hidden");
+});
