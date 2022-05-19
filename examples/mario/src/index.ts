@@ -2,6 +2,13 @@ import * as Dom from "./util/dom";
 import { ecsSetup } from "./setup";
 import { Game } from "dumb-game-framework";
 
+/*
+ * Bootstrap our "game" by inserting the stylesheet for the
+ * document dynamically, so that we can track its load progress.
+ * Once it and its referenced font files are loaded, we load our
+ * assets (Mario spritesheet), build our ECS setup (passing in
+ * hitboxes for words), and setting up resize event handlers, etc.
+ */
 const linkElement = document.createElement("link");
 linkElement.setAttribute("rel", "stylesheet");
 linkElement.setAttribute("type", "text/css");
@@ -53,7 +60,43 @@ linkElement.onload = function () {
 };
 document.head.appendChild(linkElement);
 
-const closeAlertBtn = document.querySelector("#alert-close-btn");
-closeAlertBtn.addEventListener("click", (_e) => {
-  document.querySelector("#alert").classList.add("alert-hidden");
+/*
+ * Showing/hiding top right alert.
+ */
+const alert = document.querySelector("#alert");
+
+// If user mouseovers while fading, bring it back to full opacity.
+let t = setAlertHiddenTimeout(3000);
+alert.addEventListener("mouseover", (_e) => {
+  clearTimeout(t);
+  alert.classList.remove("alert-gradual-hidden");
 });
+
+alert.addEventListener("mouseout", (_e) => {
+  t = setAlertHiddenTimeout(3000);
+});
+
+function setAlertHiddenTimeout(ms: number): ReturnType<typeof setTimeout> {
+  return setTimeout(() => {
+    alert.classList.add("alert-gradual-hidden");
+  }, ms);
+}
+
+// Remove from DOM after fade animation completes
+alert.addEventListener(
+  "animationend",
+  (ev) => {
+    if (ev.type === "animationend") {
+      removeAlert();
+    }
+  },
+  false
+);
+
+// Remove from DOM if user clicks X
+const closeAlertBtn = alert.querySelector("#alert-close-btn");
+closeAlertBtn.addEventListener("click", removeAlert);
+
+function removeAlert() {
+  alert.parentElement.removeChild(alert);
+}

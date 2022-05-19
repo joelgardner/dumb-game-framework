@@ -124,31 +124,23 @@ strong {
   }
 }
 
-.explode-horizontal {
-  animation-duration: 1s;
-  position: absolute;
-  animation-name: explode-h;
-  animation-fill-mode: forwards;
-  animation-timing-function: linear;
-}
-
-@keyframes explode-h {
-  from {
-    transform: translateX(0%);
-  }
-
-  50% {
-    transform: translateX(150px);
-  }
-
-  to {
-    transform: translateX(300px);
-  }
-}
-
 .alert-hidden {
   opacity: 0;
   transition: 0.25s;
+}
+
+.alert-gradual-hidden {
+  animation: fadeinout 3s linear forwards;
+}
+
+@keyframes fadeinout {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
 }
 
 @layer components {
