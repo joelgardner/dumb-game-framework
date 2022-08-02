@@ -2,6 +2,13 @@ export enum Key {
   ArrowUp = "ArrowUp",
   ArrowLeft = "ArrowLeft",
   ArrowRight = "ArrowRight",
+
+  // ArrowDown doesn't actually do anything,
+  // but we make it a value in this enum because
+  // we want to call stopPropagation() on it, but
+  // not for every other key (because we don't
+  // e.g. want to prevent cmd+r from refreshing.)
+  ArrowDown = "ArrowDown",
   W = "W",
   A = "A",
   D = "D",
@@ -30,9 +37,12 @@ export default class KeyboardInputManager {
 
   private handleOnPress = (e: KeyboardEvent) => {
     const key = e.key as Key;
+    if (key in Key) {
+      e.preventDefault();
+    }
+
     const handler = this.handlers.get(key);
     if (handler) {
-      e.preventDefault();
       handler({ key, state: 1 });
     }
   };

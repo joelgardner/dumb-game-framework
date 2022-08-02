@@ -66,14 +66,14 @@ document.head.appendChild(linkElement);
 const alert = document.querySelector("#alert");
 
 // If user mouseovers while fading, bring it back to full opacity.
-let t = setAlertHiddenTimeout(3000);
+let t = setAlertHiddenTimeout(8000);
 alert.addEventListener("mouseover", (_e) => {
   clearTimeout(t);
   alert.classList.remove("alert-gradual-hidden");
 });
 
 alert.addEventListener("mouseout", (_e) => {
-  t = setAlertHiddenTimeout(3000);
+  t = setAlertHiddenTimeout(8000);
 });
 
 function setAlertHiddenTimeout(ms: number): ReturnType<typeof setTimeout> {
